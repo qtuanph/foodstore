@@ -347,6 +347,7 @@ export interface Customer {
   avatarUrl?: string;
   loyaltyPoints: number;
   membershipLevel?: string;
+  birthday?: string;
   createdAt: string;
   updatedAt: string;
   createdBy?: string;
@@ -359,6 +360,7 @@ export interface CreateCustomerDto {
   email?: string;
   password?: string;
   phone?: string;
+  birthday?: string;
   isActive?: boolean;
 }
 
@@ -366,8 +368,38 @@ export interface UpdateCustomerAdminDto {
   name?: string;
   phone?: string;
   avatarUrl?: string;
+  birthday?: string;
   isActive?: boolean;
   points?: number;
+}
+
+export interface AddPointsDto {
+  points: number;
+  reason: string;
+}
+
+export interface CustomerOrderHistory {
+  id: string;
+  orderCode?: string;
+  createdAt: string;
+  totalAmount?: number;
+  status?: string;
+}
+
+export interface CustomerBirthday {
+  id: string;
+  customerCode: string;
+  name: string;
+  phone?: string;
+  birthday: string;
+  membershipLevel?: string;
+}
+
+export interface UpcomingBirthdays {
+  thisWeek: CustomerBirthday[];
+  thisMonth: CustomerBirthday[];
+  totalThisWeek: number;
+  totalThisMonth: number;
 }
 
 export interface PaymentSetting {
