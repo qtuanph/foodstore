@@ -1,0 +1,56 @@
+name: Continuous Integration (CI)
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  backend-build:
+    name: Build & Verify .NET 10 Backend API
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10 SDK (Latest)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore Backend Dependencies
+        run: dotnet restore foodstore-api/FoodstoreApi.slnx
+
+      - name: Build Backend Solution
+        run: dotnet build foodstore-api/FoodstoreApi.slnx -c Release --no-restore /p:TreatWarningsAsErrors=false
+
+  frontend-build:
+    name: Build & Verify Frontend Webapps
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [foodstore-admin, foodstore-store, foodstore-landingpage]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 26 (Latest)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '26.x'
+          cache: 'npm'
+          cache-dependency-path: '${{ matrix.project }}/package-lock.json'
+
+      - name: Install Dependencies
+        run: |
+          cd ${{ matrix.project }}
+          npm install
+
+      - name: Build Frontend
+        run: |
+          cd ${{ matrix.project }}
+          npm run build
