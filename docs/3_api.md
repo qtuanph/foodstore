@@ -72,6 +72,12 @@ Content-Type: application/json
 { "username": "root", "password": "abc123" }
 ```
 
+### Employee Logout (Token Revocation via Redis Blacklist)
+```
+POST /v2/api/auth/logout
+Authorization: Bearer <jwt_token>
+```
+
 ### Customer Login
 ```
 POST /v2/api/customers/login

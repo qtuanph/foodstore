@@ -1,4 +1,4 @@
-﻿using FoodstoreApi.Usecase.Interfaces;
+using FoodstoreApi.Usecase.Interfaces;
 using FoodstoreApi.Usecase.DTOs.Customer;
 using FoodstoreApi.Web.Authorization;
 using FoodstoreApi.Web.Extensions;
@@ -157,5 +157,13 @@ public class CustomersController : ControllerBase
     {
         var data = await _customerService.GetUpcomingBirthdaysAsync();
         return ApiResult.Success(data);
+    }
+
+    [HttpGet("leaderboard")]
+    [RequirePermission("customer.view")]
+    public async Task<IActionResult> GetLeaderboard([FromQuery] int count = 100, CancellationToken cancellationToken = default)
+    {
+        var leaderboard = await _customerService.GetTopLeaderboardAsync(count, cancellationToken);
+        return ApiResult.Success(leaderboard);
     }
 }

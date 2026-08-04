@@ -1,4 +1,4 @@
-﻿using FoodstoreApi.Core.Configuration;
+using FoodstoreApi.Core.Configuration;
 using FoodstoreApi.Core.Entities.Identity;
 using FoodstoreApi.Infrastructure.Data;
 using FoodstoreApi.Infrastructure.Extensions;
@@ -42,42 +42,18 @@ builder.Services.AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters()
     .AddValidatorsFromAssemblyContaining<Program>();
 
-builder.Services.AddSignalR();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v2", new OpenApiInfo { Title = "Foodstore API", Version = "v2", Description = "API quản lý cửa hàng Foodstore v2 — RESTful với response envelope chuẩn" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        Description = "JWT Authorization header using the Bearer scheme."
-    });
-    c.AddSecurityRequirement((document) => new OpenApiSecurityRequirement
-    {
-        { new OpenApiSecuritySchemeReference("Bearer", document), new List<string>() }
-    });
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath)) c.IncludeXmlComments(xmlPath);
-});
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<AuditSaveChangesInterceptor>();
-builder.Services.AddDbContext<StoreDbContext>((sp, options) =>
-    options.UseNpgsql(connectionString)
-           .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>()));
-
 var redisConnection = builder.Configuration.GetConnectionString("Redis") ?? throw new InvalidOperationException("Connection string 'Redis' not found.");
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = redisConnection;
     options.InstanceName = "foodstore:";
 });
+
+builder.Services.AddSignalR()
+    .AddStackExchangeRedis(redisConnection, options =>
+    {
+        options.Configuration.ChannelPrefix = StackExchange.Redis.RedisChannel.Literal("FoodstoreSignalR");
+    });
 
 builder.Services.AddSingleton<IAmazonS3>(sp =>
 {
@@ -141,6 +117,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 if (!string.IsNullOrEmpty(token))
                     context.Token = token;
                 return Task.CompletedTask;
+            },
+            OnTokenValidated = async context =>
+            {
+                var redisService = context.HttpContext.RequestServices.GetRequiredService<FoodstoreApi.Usecase.Interfaces.IRedisService>();
+                var jti = context.Principal?.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti)?.Value
+                          ?? context.Principal?.FindFirst("jti")?.Value;
+                if (!string.IsNullOrEmpty(jti) && await redisService.IsTokenBlacklistedAsync(jti))
+                {
+                    context.Fail("Token has been revoked/logout.");
+                }
             }
         };
     });

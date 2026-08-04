@@ -2,7 +2,7 @@ name: Foodstore
 
 services:
   traefik:
-    image: traefik:v3.7.5
+    image: traefik:v3.7.10
     container_name: traefik
     command:
       - "--api.insecure=true"
@@ -37,8 +37,9 @@ services:
       - app-network
 
   redis:
-    image: redis:8.8.0-trixie
+    image: redis:8.10.0-trixie
     container_name: redis
+    command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
     healthcheck:
@@ -74,7 +75,7 @@ services:
 
   api:
     build:
-      context: ./foodstore-api
+      context: .
       dockerfile: Dockerfile
     container_name: foodstore-api
     labels:
@@ -83,7 +84,7 @@ services:
       - "traefik.http.services.api.loadbalancer.server.port=8080"
     environment:
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${DB_PASSWORD}"
-      ConnectionStrings__Redis: "redis:6379"
+      ConnectionStrings__Redis: "redis:6379,abortConnect=false,connectTimeout=10000,syncTimeout=5000,ssl=false,allowAdmin=false"
       S3__Endpoint: "http://rustfs:9000"
       S3__AccessKey: ${S3_ACCESS_KEY}
       S3__SecretKey: ${S3_SECRET_KEY}
@@ -94,14 +95,9 @@ services:
       JwtSettings__Audience: "FoodstoreFrontend"
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_HTTP_PORTS: "8080"
-      AllowedOrigins__0: "http://admin.localhost"
-      AllowedOrigins__1: "http://store.localhost"
-      AllowedOrigins__2: "http://localhost"
-      AllowedOrigins__3: "http://localhost:4321"
-      AllowedOrigins__4: "http://landingpage:4321"
-      AllowedOrigins__5: "http://api.localhost"
-      AllowedOrigins__6: "http://admin:3000"
-      AllowedOrigins__7: "http://store:3000"
+      AllowedOrigins__0: ${CORS_ORIGIN_0}
+      AllowedOrigins__1: ${CORS_ORIGIN_1}
+      AllowedOrigins__2: ${CORS_ORIGIN_2}
     depends_on:
       db:
         condition: service_healthy
@@ -109,64 +105,6 @@ services:
         condition: service_healthy
       rustfs:
         condition: service_healthy
-    networks:
-      - app-network
-
-  store:
-    build:
-      context: ./foodstore-store
-      dockerfile: Dockerfile
-    container_name: foodstore-store
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.store.rule=Host(`store.localhost`)"
-      - "traefik.http.routers.store.priority=5"
-      - "traefik.http.services.store.loadbalancer.server.port=3000"
-    environment:
-      PUBLIC_API_URL: ${PUBLIC_API_URL}
-      PUBLIC_AUTH_STORAGE_PREFIX: ${PUBLIC_AUTH_STORAGE_PREFIX}
-      PUBLIC_SIGNALR_HUB: ${PUBLIC_SIGNALR_HUB}
-      PUBLIC_SIGNALR_WS_ONLY: ${PUBLIC_SIGNALR_WS_ONLY}
-      PUBLIC_VIETQR_API_URL: ${PUBLIC_VIETQR_API_URL}
-      PUBLIC_DEFAULT_QR_TEMPLATE: ${PUBLIC_DEFAULT_QR_TEMPLATE}
-      PUBLIC_SITE_DOMAIN: ${PUBLIC_SITE_DOMAIN}
-      PUBLIC_DEFAULT_CUSTOMER_PASSWORD: ${PUBLIC_DEFAULT_CUSTOMER_PASSWORD}
-      ORIGIN: ${ORIGIN}
-    depends_on:
-      - api
-    networks:
-      - app-network
-
-  admin:
-    build:
-      context: ./foodstore-admin
-      dockerfile: Dockerfile
-      args:
-        API_PROXY_URL: ${API_INTERNAL_URL}
-    container_name: foodstore-admin
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.admin.rule=Host(`admin.localhost`)"
-      - "traefik.http.routers.admin.priority=10"
-      - "traefik.http.services.admin.loadbalancer.server.port=3000"
-    environment:
-      NODE_ENV: production
-    depends_on:
-      - api
-    networks:
-      - app-network
-
-  landingpage:
-    build:
-      context: ./foodstore-landingpage
-      dockerfile: Dockerfile
-    container_name: foodstore-landingpage
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.landingpage.rule=Host(`localhost`)"
-      - "traefik.http.services.landingpage.loadbalancer.server.port=4321"
-    environment:
-      PUBLIC_API_URL: ${PUBLIC_API_URL}
     networks:
       - app-network
 

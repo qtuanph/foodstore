@@ -94,10 +94,10 @@
   "architecture": {
     "backend": "Clean Architecture (4 layers)",
     "frontend": "SvelteKit file-based routing + Next.js 16 admin dashboard",
-    "realtime": "SignalR hub at /hubs/app (MessagePack protocol)",
-    "auth": "JWT Bearer tokens + custom permission-based RBAC",
+    "realtime": "SignalR hub at /hubs/app (MessagePack protocol + Redis Backplane)",
+    "auth": "JWT Bearer tokens + custom permission-based RBAC + Redis Token Blacklist",
     "database": "PostgreSQL 18 + EF Core 10 + Npgsql",
-    "caching": "IMemoryCache (TTL: 60-300s)",
+    "caching": "Redis 8.10 (StackExchangeRedis + IRedisService + Compact Hashes + Realtime Leaderboard)",
     "rate_limiting": "Global 100 req/min, Auth 60 req/min",
     "ml": "ML.NET TimeSeries for sales forecasting",
     "e_invoice": "Multi-provider factory pattern (Viettel, MISA)"

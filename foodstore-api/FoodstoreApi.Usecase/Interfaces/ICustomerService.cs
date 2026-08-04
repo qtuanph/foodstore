@@ -1,4 +1,4 @@
-﻿using FoodstoreApi.Usecase.DTOs.Customer;
+using FoodstoreApi.Usecase.DTOs.Customer;
 
 namespace FoodstoreApi.Usecase.Interfaces;
 
@@ -20,4 +20,5 @@ public interface ICustomerService
     Task<bool> AddPointsAsync(Guid customerId, int points, string? reason = null);
     Task<List<CustomerOrderHistoryDto>> GetOrderHistoryAsync(Guid customerId);
     Task<UpcomingBirthdaysDto> GetUpcomingBirthdaysAsync();
+    Task<List<CustomerDto>> GetTopLeaderboardAsync(int count = 100, CancellationToken cancellationToken = default);
 }

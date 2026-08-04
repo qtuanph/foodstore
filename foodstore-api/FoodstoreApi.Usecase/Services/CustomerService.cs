@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using FoodstoreApi.Core.Configuration;
@@ -17,12 +17,14 @@ public class CustomerService(
     ICustomerRepository repo,
     UserManager<ApplicationUser> userManager,
     IOptions<JwtSettings> jwtOptions,
-    IMediaService mediaService) : ICustomerService
+    IMediaService mediaService,
+    IRedisService redisService) : ICustomerService
 {
     private readonly ICustomerRepository _repo = repo;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly JwtSettings _jwtSettings = jwtOptions.Value;
     private readonly IMediaService _mediaService = mediaService;
+    private readonly IRedisService _redisService = redisService;
 
     public async Task<CustomerDto> RegisterAsync(CustomerRegisterDto dto)
     {
@@ -166,7 +168,38 @@ public class CustomerService(
         customer.MembershipLevel = CalculateMembershipLevel(customer.LoyaltyPoints);
 
         await _repo.UpdateAsync(customer);
+        await _redisService.AddLeaderboardScoreAsync("crm:leaderboard:loyalty", customer.Id.ToString(), customer.LoyaltyPoints);
         return true;
+    }
+
+    public async Task<List<CustomerDto>> GetTopLeaderboardAsync(int count = 100, CancellationToken cancellationToken = default)
+    {
+        var topEntries = await _redisService.GetTopLeaderboardAsync("crm:leaderboard:loyalty", count, cancellationToken);
+        if (topEntries.Count > 0)
+        {
+            var list = new List<CustomerDto>();
+            foreach (var (memberId, score) in topEntries)
+            {
+                if (Guid.TryParse(memberId, out var custId))
+                {
+                    var cust = await GetCustomerByIdAsync(custId);
+                    if (cust != null) list.Add(cust);
+                }
+            }
+            if (list.Count > 0) return list;
+        }
+
+        // Fallback: Populate from DB
+        var customers = await _repo.GetAllAsync();
+        var sorted = customers.OrderByDescending(c => c.LoyaltyPoints).Take(count).ToList();
+        var result = new List<CustomerDto>();
+        foreach (var c in sorted)
+        {
+            await _redisService.AddLeaderboardScoreAsync("crm:leaderboard:loyalty", c.Id.ToString(), c.LoyaltyPoints, cancellationToken);
+            var user = await _userManager.FindByIdAsync(c.UserId.ToString());
+            result.Add(MapToDto(c, user));
+        }
+        return result;
     }
 
     public async Task<List<CustomerDto>> GetAllAsync(CancellationToken cancellationToken = default)

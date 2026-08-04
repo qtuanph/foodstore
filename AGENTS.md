@@ -16,12 +16,12 @@ Before any code generation, refactoring, or answering questions:
 ## Project Overview
 
 - **Monorepo**: 4 sub-projects
-  - `foodstore-api/` — .NET 10 Clean Architecture backend
-  - `foodstore-store/` — SvelteKit 2 + Svelte 5 (POS, Kitchen, Admin)
-  - `foodstore-admin/` — Next.js 16 + shadcn/ui (Admin Dashboard)
-  - `foodstore-landingpage/` — Astro 6 (Landing Page)
+  - `foodstore-api/` — .NET 10 Clean Architecture backend + Docker Stack (`docker-compose.yml`, `Dockerfile`, `.env`)
+  - `foodstore-store/` — SvelteKit 2 + Svelte 5 (POS, Kitchen, Admin) (Self-hosted)
+  - `foodstore-admin/` — Next.js 16 + shadcn/ui (Admin Dashboard) (Self-hosted)
+  - `foodstore-landingpage/` — Astro 7 (Landing Page) (Self-hosted)
 - **Database**: PostgreSQL 18 with EF Core 10 + Npgsql
-- **Deployment**: Docker Compose (8 containers: traefik, db, redis, rustfs, api, store, admin, landingpage)
+- **Deployment**: Docker Compose in `foodstore-api/` (5 containers: traefik:v3.7.10, db, redis:8.10.0-trixie, rustfs, api)
 
 ## Critical Rules
 
@@ -34,9 +34,10 @@ Before any code generation, refactoring, or answering questions:
 ### .NET Backend
 - Clean Architecture: Core → Usecase → Infrastructure → Web; dependencies point inward
 - Business logic trong Usecase Services, không trong Controllers
-- Register DI trong mỗi layer: `Extensions/DependencyInjection.cs`
+- Register DI trong mỗi layer: `Extensions/DependencyInjection.cs` hoặc `ServiceCollectionExtensions.cs`
 - Endpoints yêu cầu `[RequirePermission("module.action")]` ngoại trừ auth/public
 - S3 config đọc từ env var `S3:AccessKey`, `S3:SecretKey` — không hardcode trong `appsettings.json`
+- **Redis 8.10 Integration**: Sử dụng `IRedisService` / `RedisService` cho Compact Hashes (`HIMPORT`), Realtime CRM Leaderboard (`crm:leaderboard:loyalty`), SignalR Redis Backplane (`AddStackExchangeRedis`), và Token Blacklist revocation khi Logout
 
 ### Next.js / Admin (foodstore-admin)
 - Default Server Components — `"use client"` chỉ khi cần

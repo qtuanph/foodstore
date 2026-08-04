@@ -1,4 +1,4 @@
-﻿using FoodstoreApi.Infrastructure.Handlers;
+using FoodstoreApi.Infrastructure.Handlers;
 using FoodstoreApi.Infrastructure.Repositories;
 using FoodstoreApi.Usecase.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +33,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
 
         services.AddScoped<IMediaService, MediaHandler>();
+
+        // Redis 8.10 Infrastructure Service Registration
+        var redisConnString = configuration.GetConnectionString("Redis") ?? "redis:6379,abortConnect=false";
+        services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(sp =>
+            StackExchange.Redis.ConnectionMultiplexer.Connect(redisConnString));
+        services.AddScoped<IRedisService, FoodstoreApi.Infrastructure.Caching.RedisService>();
 
         return services;
     }

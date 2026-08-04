@@ -1,4 +1,4 @@
-﻿using FoodstoreApi.Usecase.Interfaces;
+using FoodstoreApi.Usecase.Interfaces;
 using FoodstoreApi.Usecase.DTOs.Auth;
 using FoodstoreApi.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -44,8 +44,18 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
 
     [HttpPost("logout")]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
     {
+        var authHeader = Request.Headers.Authorization.ToString();
+        var token = authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+            ? authHeader["Bearer ".Length..].Trim()
+            : Request.Cookies["auth_token"];
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            await _authService.LogoutAsync(token, cancellationToken);
+        }
+
         ClearAuthCookie();
         return ApiResult.Success(new { message = "Logged out successfully" });
     }

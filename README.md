@@ -17,8 +17,8 @@
     <img src="https://img.shields.io/badge/TypeScript-6|7-3178C6?logo=typescript" alt="TypeScript 6/7">
     <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss" alt="Tailwind CSS 4">
     <img src="https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql" alt="PostgreSQL 18">
-    <img src="https://img.shields.io/badge/Redis-8-DC382D?logo=redis" alt="Redis 8">
-    <img src="https://img.shields.io/badge/Traefik-latest-24D1C4?logo=traefik" alt="Traefik">
+    <img src="https://img.shields.io/badge/Redis-8.10-DC382D?logo=redis" alt="Redis 8.10">
+    <img src="https://img.shields.io/badge/Traefik-v3.7.10-24D1C4?logo=traefik" alt="Traefik v3.7.10">
     <img src="https://img.shields.io/badge/Docker-2496ED?logo=docker" alt="Docker">
   </p>
 
@@ -219,70 +219,44 @@ docker compose up -d
 | `http://admin.localhost` | Admin Dashboard (Next.js + shadcn) |
 | `http://api.localhost` | API (Swagger UI) |
 
+### 1. API Stack Quickstart (Docker Compose)
+
+```bash
+cd foodstore-api
+docker compose up -d
+```
+
+| Service | Image | Internal Port | Host (Traefik) |
+|---------|-------|--------------|----|
+| **traefik** | `traefik:v3.7.10` | `:8080` | — |
+| **db** | `postgres:18.4-trixie` | `:5432` | — |
+| **redis** | `redis:8.10.0-trixie` | `:6379` | — |
+| **rustfs** | `rustfs/rustfs:latest` | `:9000` (S3) | uploads.localhost |
+| **api** | `foodstore-api` (build) | `:8080` | api.localhost |
+
 ### 2. Local Development (without Docker)
 
 ```bash
-# Terminal 1 — Dependencies (PostgreSQL + Redis + RustFS)
+# Terminal 1 — API Stack Dependencies (PostgreSQL + Redis 8.10 + RustFS)
+cd foodstore-api
 docker compose up -d db redis rustfs
 
 # Terminal 2 — Backend API
 cd foodstore-api
 dotnet run --project FoodstoreApi.Web   # http://localhost:5142
 
-# Terminal 3 — foodstore-store
+# Terminal 3 — foodstore-store (Self-hosted)
 cd foodstore-store
 npm install && npm run dev              # http://localhost:5173
 
-# Terminal 4 — foodstore-admin
+# Terminal 4 — foodstore-admin (Self-hosted)
 cd foodstore-admin
 npm install && npm run dev              # http://localhost:3000
 
-# Terminal 5 — foodstore-landingpage
+# Terminal 5 — foodstore-landingpage (Self-hosted)
 cd foodstore-landingpage
 npm install && npm run dev              # http://localhost:4321
 ```
-
-### 3. Build Docker Images
-```bash
-docker compose build
-```
-
-## Configuration
-
-### Environment (`.env`)
-```env
-# PostgreSQL
-POSTGRES_USER=foodstore
-POSTGRES_DB=foodstore_shop
-DB_PASSWORD=your_password_here
-
-# S3 (RustFS)
-S3_ACCESS_KEY=foodstore
-S3_SECRET_KEY=your_secret_here
-S3_BUCKET=food-media
-
-# JWT
-JWT_SECRET=your_jwt_secret_here
-
-# Frontend
-PUBLIC_API_URL=http://api:8080
-```
-
-### Backend (`appsettings.json`)
-Settings are overridden by environment variables in Docker (via `docker-compose.yml`). The committed `appsettings.json` contains placeholder values (`__CHANGE_ME__`, `overridden_by_env`) — real secrets are in `.env` and passed as env vars to containers.
-
-## Docker Compose Services
-
-| Service | Image | Internal Port | Host (Traefik) |
-|---------|-------|--------------|----|
-| **traefik** | `traefik:latest` | `:8080` (web) | — |
-| **db** | `postgres:18-alpine` | `:5432` | — |
-| **redis** | `redis:8-alpine` | `:6379` | — |
-| **rustfs** | `rustfs/rustfs:latest` | `:9000` (S3) | uploads.localhost |
-| **api** | `foodstore-api` (build) | `:8080` | api.localhost |
-| **store** | `foodstore-store` (build) | `:3000` | store.localhost |
-| **admin** | `foodstore-admin` (build) | `:3000` | admin.localhost |
-| **landingpage** | `foodstore-landingpage` (build) | `:4321` | localhost |
 
 ## API Proxy
 

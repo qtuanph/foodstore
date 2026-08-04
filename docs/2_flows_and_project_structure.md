@@ -4,9 +4,10 @@
 
 ```
 foodstore/
-├── docker-compose.yml                    # 🐳 Full stack (8 services)
-├── .env                                  # 🔒 Environment variables
 ├── foodstore-api/                         # 🖥️ Backend (.NET 10 Clean Architecture)
+│   ├── docker-compose.yml                 # 🐳 API Stack (5 services: traefik, db, redis:8.10.0-trixie, rustfs, api)
+│   ├── .env                               # 🔒 Environment variables for API stack
+│   ├── Dockerfile                         # 🐳 API Dockerfile
 │   ├── FoodstoreApi.slnx                  # Solution file
 │   │
 │   ├── FoodstoreApi.Core/                 # 🎯 Domain Layer (zero dependencies)

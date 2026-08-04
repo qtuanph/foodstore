@@ -156,17 +156,17 @@ Business + CMS (22+ tables) ───  Menu, orders, payments, blog, media
 
 | Feature | Technology |
 |---|---|
-| Real-Time | SignalR + MessagePack binary protocol |
-| Caching | Redis 8 (distributed, via StackExchangeRedis) |
+| Real-Time | SignalR + MessagePack binary protocol + Redis Backplane (`AddStackExchangeRedis`) |
+| Caching | Redis 8.10 GA (`redis:8.10.0-trixie` via `IRedisService`, Compact Hashes `HIMPORT`, Sorted Sets Leaderboard) |
 | Rate Limiting | System.Threading.RateLimiting (fixed window) |
-| Authentication (API) | JWT (HS256, access + refresh tokens) |
+| Authentication (API) | JWT (HS256) + Redis Token Blacklist Revocation on Logout |
 | Authentication (Admin) | Better Auth (Next.js BFF) with Drizzle ORM — session cookies, HttpOnly, no client token exposure |
 | Authorization | Custom permission-based RBAC with claims |
 | Media Storage | RustFS (S3-compatible object storage) via AWS SDK |
 | ML | ML.NET SSA forecasting + co-occurrence recommendations |
 | E-Invoice | Multi-provider via factory pattern (Viettel, MISA) with `IEInvoiceProvider` abstraction |
 | File Validation | Server-side MIME type + extension check |
-| Deployment | Docker Compose (8 services) |
+| Deployment | Docker Compose in `foodstore-api/` (5 API stack services: traefik:v3.7.10, db, redis:8.10.0-trixie, rustfs, api) |
 | Proxy | Vite dev proxy (localhost:5173 → localhost:5142) |
 
 ## Landing Page — foodstore-landingpage (Astro)

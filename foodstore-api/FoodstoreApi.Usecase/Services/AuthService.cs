@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using FoodstoreApi.Core.Configuration;
@@ -18,13 +18,15 @@ public class AuthService(
     RoleManager<ApplicationRole> roleManager,
     SignInManager<ApplicationUser> signInManager,
     IEmployeeRepository employeeRepository,
-    IOptions<JwtSettings> jwtOptions) : IAuthService
+    IOptions<JwtSettings> jwtOptions,
+    IRedisService redisService) : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly RoleManager<ApplicationRole> _roleManager = roleManager;
     private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
     private readonly IEmployeeRepository _employeeRepository = employeeRepository;
     private readonly JwtSettings _jwtSettings = jwtOptions.Value;
+    private readonly IRedisService _redisService = redisService;
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
@@ -84,30 +86,27 @@ public class AuthService(
         throw new NotImplementedException("Refresh token not yet implemented");
     }
 
-    public Task<bool> ValidateTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<bool> LogoutAsync(string token, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(token)) return false;
+
         try
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_jwtSettings.SecretKey);
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var jti = jwtToken.Id;
+            if (string.IsNullOrEmpty(jti)) return false;
 
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidIssuer = _jwtSettings.Issuer,
-                ValidateAudience = true,
-                ValidAudience = _jwtSettings.Audience,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+            var expiry = jwtToken.ValidTo > DateTime.UtcNow 
+                ? jwtToken.ValidTo - DateTime.UtcNow 
+                : TimeSpan.FromHours(_jwtSettings.ExpiryInHours);
 
-            return Task.FromResult(true);
+            await _redisService.BlacklistTokenAsync(jti, expiry, cancellationToken);
+            return true;
         }
         catch
         {
-            return Task.FromResult(false);
+            return false;
         }
     }
 
@@ -203,6 +202,7 @@ public class AuthService(
 
         var claims = new List<Claim>
         {
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Email, user.Email ?? ""),
             new("username", user.UserName ?? ""),
