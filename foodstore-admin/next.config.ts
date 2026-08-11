@@ -4,6 +4,9 @@ const backendUrl = process.env.API_PROXY_URL || process.env.NEXT_PUBLIC_API_URL 
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  experimental: {
+    useTypeScriptCli: true,
+  },
   async rewrites() {
     return [
       {

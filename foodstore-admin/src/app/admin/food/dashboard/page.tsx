@@ -120,7 +120,7 @@ export default function FoodDashboard() {
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                         <XAxis dataKey="date" tick={{ fontSize: 12 }} tickFormatter={(v) => new Date(v).toLocaleDateString("vi-VN", { weekday: "short", day: "numeric" })} />
                         <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                        <Tooltip formatter={(v) => formatCurrency(Number(v))} labelFormatter={(l) => new Date(l).toLocaleDateString("vi-VN")} />
+                        <Tooltip formatter={(v) => formatCurrency(Number(v))} labelFormatter={(l) => new Date(String(l)).toLocaleDateString("vi-VN")} />
                         <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#revenueGradient)" />
                       </AreaChart>
                     </ResponsiveContainer>
