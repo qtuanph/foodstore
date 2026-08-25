@@ -183,9 +183,6 @@ foodstore/
 │   ├── Dockerfile
 │   └── astro.config.mjs
 │
-├── scripts/                              # 📜 Database
-│   └── init.sql                          #   PostgreSQL schema (28+ tables)
-│
 ├── docs/                                 # 📚 Documentation
 │   ├── 0_quick_reference.json
 │   ├── 1_tech_stack.md

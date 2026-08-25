@@ -186,8 +186,6 @@ foodstore/
 │   │   ├── components/             #   shadcn/ui + custom components
 │   │   └── lib/                    #   Auth, API client, services
 ├── foodstore-landingpage/           # Landing Page (Astro)
-├── scripts/                         # DB init scripts
-│   └── init.sql
 ├── docker-compose.yml               # Full stack orchestration
 ├── .env                             # Environment variables
 ├── .env.example                     # Environment template

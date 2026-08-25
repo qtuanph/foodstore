@@ -77,7 +77,7 @@ Run build sau mỗi thay đổi. Fix errors, warnings là tech debt chấp nhậ
 | `foodstore-api/FoodstoreApi.Web/Program.cs` | API composition root |
 | `foodstore-api/FoodstoreApi.Web/Controllers/` | 25 API controllers |
 | `foodstore-api/FoodstoreApi.Infrastructure/Data/StoreDbContext.cs` | EF Core DbContext (30+ DbSets) |
-| `scripts/init.sql` | PostgreSQL schema — 28+ tables |
+| `foodstore-api/FoodstoreApi.Infrastructure/Migrations/` | EF Core Migrations (schema — thay cho init.sql cũ) |
 | `foodstore-admin/next.config.ts` | Next.js config + API proxy rules |
 | `foodstore-admin/src/app/admin/` | CMS, CRM, Employees, Food pages |
 | `foodstore-admin/src/components/editor/tiptap.tsx` | TipTap rich text editor |
