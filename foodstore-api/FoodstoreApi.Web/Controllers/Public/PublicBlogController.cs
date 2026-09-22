@@ -3,17 +3,17 @@ using FoodstoreApi.Usecase.Services;
 using Microsoft.AspNetCore.Mvc;
 using FoodstoreApi.Web.ApiResponse;
 
-namespace FoodstoreApi.Web.Controllers;
+namespace FoodstoreApi.Web.Controllers.Public;
 
-[Route("api/cms")]
+[Route("api/public/blog")]
 [ApiController]
-public class CmsPublicController : ControllerBase
+public class PublicBlogController : ControllerBase
 {
     private readonly IBlogService _blogService;
     private readonly IBlogCategoryService _categoryService;
     private readonly ITagService _tagService;
 
-    public CmsPublicController(
+    public PublicBlogController(
         IBlogService blogService,
         IBlogCategoryService categoryService,
         ITagService tagService)

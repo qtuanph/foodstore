@@ -26,7 +26,6 @@ import {
   ClipboardListIcon,
   PercentIcon,
   BookOpenIcon,
-  SmartphoneIcon,
   TagsIcon,
   UserCogIcon,
   RadioIcon,

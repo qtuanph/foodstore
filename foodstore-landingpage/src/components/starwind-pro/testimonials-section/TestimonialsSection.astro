@@ -1,0 +1,106 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { tv } from "tailwind-variants";
+
+import { Avatar, AvatarFallback } from "@/components/starwind/avatar";
+import { Card, CardContent } from "@/components/starwind/card";
+import { Badge } from "@/components/starwind/badge";
+
+export interface Testimonial {
+  name: string;
+  role: string;
+  content: string;
+  rating: number;
+}
+
+interface Props extends HTMLAttributes<"section"> {
+  heading?: string;
+  description?: string;
+  testimonials?: Testimonial[];
+}
+
+const sectionStyles = tv({
+  base: "@container mx-auto w-full max-w-7xl px-4 py-24",
+});
+
+const {
+  heading = "Khách hàng nói gì về chúng tôi?",
+  description = "Hãy xem những đánh giá từ khách hàng đã trải nghiệm dịch vụ của FoodStore.",
+  testimonials = [
+    {
+      name: "Nguyễn Thị Mai",
+      role: "Khách hàng thân thiết",
+      content: "Burger bò ở đây tuyệt vời nhất tôi từng thử. Phô mai tan chảy, thịt bò Úc mềm ngọt, sốt bí truyền rất đặc biệt. Giao hàng đúng 30 phút!",
+      rating: 5
+    },
+    {
+      name: "Trần Văn Hùng",
+      role: "Doanh nhân",
+      content: "Hay đặt tiệc công ty tại FoodStore. Món ăn đa dạng, giá hợp lý, phục vụ chuyên nghiệp. Đánh giá 4.8 trên Google của họ là xứng đáng.",
+      rating: 5
+    },
+    {
+      name: "Lê Thị Hương",
+      role: "Food blogger",
+      content: "Là người review đồ ăn, tôi ấn tượng với chất lượng tại FoodStore. Nguyên liệu tươi, hương vị tự nhiên. Salad bơ tôm là món yêu thích.",
+      rating: 5
+    }
+  ],
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<section class={sectionStyles({ class: className })} {...rest}>
+  <div class="mb-16 text-center">
+    <Badge variant="secondary" class="mb-4">Đánh giá</Badge>
+    <h2 class="font-heading text-3xl font-bold tracking-tight text-pretty @2xl:text-4xl">
+      {heading}
+    </h2>
+    <p class="text-muted-foreground mt-4 text-lg text-pretty">
+      {description}
+    </p>
+  </div>
+
+  <div class="grid gap-6 @xl:grid-cols-2 @3xl:grid-cols-3 @3xl:gap-8">
+    {
+      testimonials.map((testimonial) => (
+        <Card class="hover:shadow-lg transition-shadow">
+          <CardContent class="flex flex-col gap-4">
+            <div class="flex items-center gap-1 text-primary">
+              {Array.from({ length: testimonial.rating }).map(() => (
+                <svg class="size-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <blockquote class="text-muted-foreground leading-relaxed">
+              "{testimonial.content}"
+            </blockquote>
+            <div class="flex items-center gap-3 pt-2 border-t">
+              <Avatar>
+                <AvatarFallback class="bg-primary/10 text-primary">
+                  {testimonial.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <div class="font-medium text-foreground">{testimonial.name}</div>
+                <div class="text-sm text-muted-foreground">{testimonial.role}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))
+    }
+  </div>
+
+  {/* Trust badge */}
+  <div class="mt-12 text-center">
+    <div class="inline-flex items-center gap-2 text-muted-foreground">
+      <svg class="size-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+      <span>Đánh giá 4.8/5 trên Google • 200+ reviews</span>
+    </div>
+  </div>
+</section>

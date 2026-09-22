@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { Edit, Plus, QrCode, Trash2, Coins, History } from "lucide-react"
 import { QRCodeSVG } from "qrcode.react"
 import { toast } from "sonner"
@@ -21,7 +22,7 @@ import { DeleteConfirmDialog } from "@/components/confirm-dialog"
 import { StatusBadge } from "@/components/status-badge"
 import { customerService } from "@/lib/services/customer-service"
 import { formatDateTime, formatCurrency, formatDate } from "@/lib/utils"
-import type { Customer, CreateCustomerDto, UpdateCustomerAdminDto, AddPointsDto, CustomerOrderHistory } from "@/lib/types"
+import type { Customer, CreateCustomerDto, UpdateCustomerAdminDto, CustomerOrderHistory } from "@/lib/types"
 
 export default function CustomersPage() {
   const [data, setData] = React.useState<Customer[]>([])
@@ -130,7 +131,7 @@ export default function CustomersPage() {
       header: "Họ tên",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          {row.original.avatarUrl ? <img src={row.original.avatarUrl} alt="" className="size-8 rounded-full object-cover" /> : <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium">{row.original.name.charAt(0)}</div>}
+          {row.original.avatarUrl ? <Image src={row.original.avatarUrl} alt="" width={32} height={32} unoptimized className="size-8 rounded-full object-cover" /> : <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium">{row.original.name.charAt(0)}</div>}
           <span>{row.original.name}</span>
         </div>
       ),

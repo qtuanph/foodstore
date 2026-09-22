@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useParams, useRouter } from "next/navigation"
-import { Save, ArrowLeft, Eye, Clock, Send, Copy, Check } from "lucide-react"
+import { Save, ArrowLeft, Eye, Clock } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -13,8 +13,11 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { Tiptap } from "@/components/editor/tiptap"
+import dynamic from "next/dynamic"
+const Tiptap = dynamic(() => import("@/components/editor/tiptap").then((m) => m.Tiptap), {
+  loading: () => <div className="border rounded-lg p-4 min-h-[300px]"><p className="text-muted-foreground text-sm">Đang tải trình soạn thảo...</p></div>,
+  ssr: false,
+})
 import { blogService } from "@/lib/services/blog-service"
 import { blogCategoryService } from "@/lib/services/blog-category-service"
 import { blogTagService } from "@/lib/services/blog-tag-service"

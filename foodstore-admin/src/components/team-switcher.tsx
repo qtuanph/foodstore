@@ -60,7 +60,7 @@ export function TeamSwitcher({
               <DropdownMenuLabel className="text-xs text-muted-foreground">
                 Phân hệ
               </DropdownMenuLabel>
-              {teams.map((team, index) => (
+              {teams.map((team) => (
                 <DropdownMenuItem
                   key={team.name}
                   onClick={() => onTeamChange(team)}

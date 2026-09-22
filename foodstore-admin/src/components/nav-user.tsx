@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import {
   Avatar,
   AvatarFallback,
@@ -31,7 +30,6 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const { user, isLoading, logout } = useAuth()
-  const router = useRouter()
 
   if (isLoading) {
     return (

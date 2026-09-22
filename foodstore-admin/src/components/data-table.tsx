@@ -14,7 +14,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import {
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -105,11 +104,9 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center gap-2">
           {toolbarActions}
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="outline" size="sm" className="h-9 gap-1.5">
-                <SlidersHorizontal className="size-3.5" />
-                <span className="hidden sm:inline">Cột</span>
-              </Button>
+            <DropdownMenuTrigger render={<Button variant="outline" size="sm" className="h-9 gap-1.5" />}>
+              <SlidersHorizontal className="size-3.5" />
+              <span className="hidden sm:inline">Cột</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {table
@@ -155,7 +152,7 @@ export function DataTable<TData, TValue>({
                   ))}
                 </TableRow>
               ))
-            ) : table.getRowModel().rows.length ? (
+            ) : (table.getRowModel()?.rows ?? []).length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Image from "next/image"
 import { useTheme } from "next-themes"
 import { useAuth } from "@/lib/auth-context"
 import { authService } from "@/lib/auth-service"
@@ -132,7 +133,7 @@ export function SettingsDialog({
                   <div className="relative">
                     <div className="size-20 rounded-full overflow-hidden bg-muted flex items-center justify-center">
                       {avatarUrl ? (
-                        <img src={avatarUrl} alt="" className="size-full object-cover" />
+                        <Image src={avatarUrl} alt="" width={80} height={80} unoptimized className="size-full object-cover" />
                       ) : (
                         <span className="text-2xl font-medium text-muted-foreground">{initials}</span>
                       )}

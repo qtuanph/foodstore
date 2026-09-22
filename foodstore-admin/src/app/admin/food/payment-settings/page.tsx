@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Edit, Plus, Star, Trash2, Ban, BadgeCheck } from "lucide-react"
+import { Edit, Plus, Star, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"

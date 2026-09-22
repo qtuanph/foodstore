@@ -1,0 +1,80 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { tv } from "tailwind-variants";
+
+import { Button } from "@/components/starwind/button";
+
+interface Props extends HTMLAttributes<"section"> {
+  heading?: string;
+  description?: string;
+  primaryButtonText?: string;
+  primaryButtonHref?: string;
+  secondaryButtonText?: string;
+  secondaryButtonHref?: string;
+}
+
+const heroStyles = tv({
+  base: "relative flex min-h-screen items-center justify-center overflow-hidden",
+});
+
+const {
+  heading = "Thức ăn tuyệt ngon, đến tận nhà",
+  description = "Tận hưởng hương vị đích thực từ những đầu bếp hàng đầu. Nguyên liệu tươi ngon, giao hàng siêu tốc trong 30 phút.",
+  primaryButtonText = "Xem thực đơn",
+  primaryButtonHref = "#menu",
+  secondaryButtonText = "Đặt bàn ngay",
+  secondaryButtonHref = "#contact",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<section class={heroStyles({ class: className })} {...rest}>
+  {/* Background image with overlay */}
+  <div class="absolute inset-0">
+    <img 
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=80&auto=format&fit=crop" 
+      alt="Delicious food" 
+      class="size-full object-cover"
+    />
+    <div class="absolute inset-0 bg-black/50"></div>
+  </div>
+
+  {/* Content */}
+  <div class="relative z-10 mx-auto max-w-4xl px-4 text-center">
+    <h1 class="font-heading text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
+      {heading}
+    </h1>
+    
+    <p class="mt-6 text-lg text-white/80 sm:text-xl md:text-2xl max-w-2xl mx-auto">
+      {description}
+    </p>
+    
+    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+      <Button 
+        size="lg" 
+        class="px-8 py-6 text-lg font-bold w-full sm:w-auto"
+        href={primaryButtonHref}
+      >
+        {primaryButtonText}
+      </Button>
+      <Button 
+        variant="secondary" 
+        size="lg" 
+        class="px-8 py-6 text-lg font-bold bg-white text-black hover:bg-white/90 w-full sm:w-auto"
+        href={secondaryButtonHref}
+      >
+        {secondaryButtonText}
+      </Button>
+    </div>
+  </div>
+
+  {/* Scroll indicator */}
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
+    <div class="flex flex-col items-center gap-2 text-white/60">
+      <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </div>
+  </div>
+</section>

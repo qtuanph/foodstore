@@ -1,0 +1,71 @@
+services:
+  redis:
+    image: redis:8.10.1-alpine
+    container_name: foodstore-admin-redis
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --appendfsync
+      - everysec
+      - --save
+      - "60"
+      - "1000"
+      - --maxmemory
+      - "256mb"
+      - --maxmemory-policy
+      - allkeys-lru
+      - --io-threads
+      - "4"
+      - --io-threads-do-reads
+      - "yes"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD:-foodstore_dev_2026}"
+    volumes:
+      - redis_data:/data
+    mem_limit: 512m
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'redis-cli -a "$$REDIS_PASSWORD" ping | grep -q PONG'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - admin-internal
+
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        API_PROXY_URL: "http://api:8080/v2"
+    container_name: foodstore-admin
+    ports:
+      - "3000:3000"
+    environment:
+      API_PROXY_URL: "http://api:8080/v2"
+      NEXT_PUBLIC_API_URL: "http://api:8080/v2"
+      REDIS_URL: "redis://:${REDIS_PASSWORD:-foodstore_dev_2026}@redis:6379/0"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - admin-internal
+      - Foodstore_app-network
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  admin-internal:
+    driver: bridge
+  Foodstore_app-network:
+    external: true

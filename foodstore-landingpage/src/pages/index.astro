@@ -1,11 +1,246 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import HeroSection from '../components/starwind-pro/hero-section/HeroSection.astro';
+import About from '../components/About.astro';
+import Menu from '../components/Menu.astro';
+import FeaturesSection from '../components/starwind-pro/features-section/FeaturesSection.astro';
+import Specials from '../components/Specials.astro';
+import TestimonialsSection from '../components/starwind-pro/testimonials-section/TestimonialsSection.astro';
+import FaqSection from '../components/starwind-pro/faq-section/FaqSection.astro';
+import CtaSection from '../components/starwind-pro/cta-section/CtaSection.astro';
+import ContactSection from '../components/starwind-pro/contact-section/ContactSection.astro';
+import FooterSection from '../components/starwind-pro/footer-section/FooterSection.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { getBlogArticles } from '../lib/api';
+import { Badge } from '@/components/starwind/badge';
+import { Card, CardContent } from '@/components/starwind/card';
+import { Button } from '@/components/starwind/button';
+
+import IconLeaf from "@tabler/icons/outline/leaf.svg";
+import IconChefHat from "@tabler/icons/outline/chef-hat.svg";
+import IconTruck from "@tabler/icons/outline/truck.svg";
+import IconClock from "@tabler/icons/outline/clock.svg";
+import IconStar from "@tabler/icons/outline/star.svg";
+import IconHeart from "@tabler/icons/outline/heart.svg";
+import IconBrandFacebook from "@tabler/icons/outline/brand-facebook.svg";
+import IconBrandInstagram from "@tabler/icons/outline/brand-instagram.svg";
+import IconNews from "@tabler/icons/outline/news.svg";
+
+// Fetch all published articles at build time
+const blogRes = await getBlogArticles(1, 9);
+const featuredArticles = Array.isArray(blogRes?.data) ? blogRes.data : [];
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="FoodStore - Thức ăn ngon, giao hàng nhanh" description="FoodStore mang đến cho bạn những bữa ăn tươi ngon nhất với nguyên liệu chất lượng cao.">
+  <Navbar />
+  
+  {/* Hero */}
+  <HeroSection 
+    heading="Thức ăn tuyệt ngon, đến tận nhà"
+    description="Tận hưởng hương vị đích thực từ những đầu bếp hàng đầu. Nguyên liệu tươi ngon, giao hàng siêu tốc trong 30 phút."
+    primaryButtonText="Xem thực đơn"
+    primaryButtonHref="#menu"
+    secondaryButtonText="Đặt bàn ngay"
+    secondaryButtonHref="#contact"
+  />
+  
+  {/* About */}
+  <About />
+  
+  {/* Menu */}
+  <Menu />
+  
+  {/* Features */}
+  <FeaturesSection 
+    title="Tại sao chọn FoodStore?"
+    description="Chúng tôi cam kết mang đến những bữa ăn chất lượng nhất với dịch vụ tốt nhất."
+    features={[
+      {
+        icon: IconLeaf,
+        title: "Nguyên liệu tươi 100%",
+        description: "Tuyển chọn kỹ lưỡng từ những trang trại uy tín nhất, cam kết không chất bảo quản."
+      },
+      {
+        icon: IconChefHat,
+        title: "Đầu bếp quốc tế",
+        description: "Đội ngũ đầu bếp với hơn 15 năm kinh nghiệm, đào tạo từ trường ẩm thực hàng đầu."
+      },
+      {
+        icon: IconTruck,
+        title: "Giao hàng siêu tốc",
+        description: "Giao hàng trong 30 phút hoặc miễn phí. Hotline hỗ trợ 24/7."
+      },
+      {
+        icon: IconClock,
+        description: "Đội ngũ shipper chuyên nghiệp, luôn đúng giờ và nhiệt tình.",
+        title: "Phục vụ 24/7"
+      },
+      {
+        icon: IconStar,
+        title: "Đánh giá 5 sao",
+        description: "Hơn 12,500 khách hàng hài lòng với dịch vụ của chúng tôi."
+      },
+      {
+        icon: IconHeart,
+        title: "Tận tâm với khách hàng",
+        description: "Mang đến trải nghiệm ẩm thực tuyệt vời nhất cho bạn."
+      }
+    ]}
+  />
+  
+  {/* Specials */}
+  <Specials />
+  
+  {/* Testimonials */}
+  <TestimonialsSection 
+    heading="Khách hàng nói gì về chúng tôi?"
+    description="Hãy xem những đánh giá từ khách hàng đã trải nghiệm dịch vụ của FoodStore."
+    testimonials={[
+      {
+        name: "Nguyễn Thị Mai",
+        role: "Khách hàng thân thiết",
+        content: "FoodStore là địa điểm yêu thích của gia đình tôi. Món ăn luôn tươi ngon, giao hàng nhanh chóng. Đặc biệt là burger bò rất tuyệt vời!",
+        rating: 5
+      },
+      {
+        name: "Trần Văn Hùng",
+        role: "Doanh nhân",
+        content: "Tôi thường đặt tiệc tại FoodStore cho các buổi họp mặt công ty. Dịch vụ chuyên nghiệp, món ăn đa dạng và giá cả hợp lý.",
+        rating: 5
+      },
+      {
+        name: "Lê Thị Hương",
+        role: "Food blogger",
+        content: "Là người review đồ ăn, tôi rất ấn tượng với chất lượng món ăn tại FoodStore. Nguyên liệu tươi, hương vị tuyệt hảo!",
+        rating: 5
+      }
+    ]}
+  />
+  
+  {/* Blog Section */}
+  <section id="blog" class="py-24 bg-muted/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12 space-y-4">
+        <Badge variant="secondary" class="inline-flex items-center gap-2">
+          <IconNews class="size-4" />
+          Blog
+        </Badge>
+        <h2 class="text-4xl md:text-5xl font-bold text-foreground">
+          Bài viết nổi bật
+        </h2>
+        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Khám phá công thức nấu ăn, mẹo vặt và tin tức ẩm thực mới nhất.
+        </p>
+      </div>
+
+      {featuredArticles.length > 0 ? (
+        <div class="grid md:grid-cols-3 gap-6">
+          {featuredArticles.map((post) => (
+            <a href={`/blog/${post.slug}`} class="group">
+              <Card class="h-full hover:shadow-lg transition-shadow overflow-hidden">
+                {post.thumbnailUrl && (
+                  <div class="aspect-video overflow-hidden">
+                    <img 
+                      src={post.thumbnailUrl} 
+                      alt={post.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                <CardContent class="p-6">
+                  <div class="flex items-center gap-2 mb-3">
+                    {post.categories?.slice(0, 2).map((cat) => (
+                      <Badge variant="secondary" class="text-xs">{cat.name}</Badge>
+                    ))}
+                  </div>
+                  <h3 class="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p class="text-muted-foreground text-sm line-clamp-2 mb-4">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  <div class="flex items-center gap-4 text-xs text-muted-foreground">
+                    {post.publishedAt && (
+                      <span>{new Date(post.publishedAt).toLocaleDateString('vi-VN')}</span>
+                    )}
+                    {post.readingTime && (
+                      <span>{post.readingTime} phút đọc</span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-12">
+          <Card class="max-w-md mx-auto">
+            <CardContent class="p-8 text-center">
+              <IconNews class="size-12 text-muted-foreground mx-auto mb-4" />
+              <p class="text-muted-foreground">Chưa có bài viết nào. Hãy quay lại sau!</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      <div class="text-center mt-8">
+        <Button variant="outline" href="/blog">
+          Xem tất cả bài viết
+          <svg class="size-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </Button>
+      </div>
+    </div>
+  </section>
+  
+  {/* FAQ */}
+  <FaqSection 
+    heading="Câu hỏi thường gặp"
+    description="Tìm hiểu thêm về dịch vụ của chúng tôi."
+    items={[
+      {
+        title: "Giờ mở cửa là khi nào?",
+        content: "Thứ 2 - Thứ 6: 7:00 - 22:00. Thứ 7 - Chủ nhật: 8:00 - 23:00. Mở cửa cả ngày lễ."
+      },
+      {
+        title: "Có hỗ trợ đặt tiệc không?",
+        content: "Có, chúng tôi hỗ trợ đặt tiệc sinh nhật, tiệc công ty, hội nghị với mức giá ưu đãi. Vui lòng liên hệ hotline 1900 1234 56."
+      },
+      {
+        title: "Menu có những món gì?",
+        content: "FoodStore phục vụ đa dạng các món ăn từ burger, pizza, salad đến các món Á u. Thực đơn được cập nhật thường xuyên theo mùa."
+      },
+      {
+        title: "Làm thế nào để đặt bàn?",
+        content: "Bạn có thể đặt bàn qua hotline 1900 1234 56 hoặc đến trực tiếp cửa hàng. Chúng tôi khuyến khích đặt bàn trước vào dịp cuối tuần."
+      },
+      {
+        title: "Có chỗ đậu xe không?",
+        content: "Có, FoodStore có bãi đậu xe miễn phí cho khách hàng."
+      }
+    ]}
+  />
+  
+  {/* CTA */}
+  <CtaSection />
+  
+  {/* Contact */}
+  <ContactSection 
+    badge="Liên hệ"
+    heading="Gửi tin nhắn cho chúng tôi"
+    description="Bạn có câu hỏi hoặc muốn đặt tiệc? Hãy liên hệ với chúng tôi!"
+  />
+  
+  {/* Footer */}
+  <FooterSection 
+    companyName="FoodStore"
+    socialLinks={[
+      { name: "Facebook", href: "https://facebook.com", icon: IconBrandFacebook },
+      { name: "Instagram", href: "https://instagram.com", icon: IconBrandInstagram }
+    ]}
+  />
 </Layout>

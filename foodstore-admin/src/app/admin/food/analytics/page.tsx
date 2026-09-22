@@ -3,7 +3,10 @@
 import * as React from "react"
 import { BarChart3, ShoppingCart, Receipt, Wand2 } from "lucide-react"
 import { toast } from "sonner"
-import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import {
+  Bar, BarChart, CartesianGrid, Line, LineChart,
+  ResponsiveContainer, Tooltip, XAxis, YAxis,
+} from "@/components/ui/dynamic-charts"
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"

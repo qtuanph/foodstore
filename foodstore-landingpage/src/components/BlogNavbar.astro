@@ -1,0 +1,80 @@
+---
+import { Button } from "@/components/starwind/button";
+import { Badge } from "@/components/starwind/badge";
+
+import IconArrowLeft from "@tabler/icons/outline/arrow-left.svg";
+import IconHome from "@tabler/icons/outline/home.svg";
+import IconNews from "@tabler/icons/outline/news.svg";
+import { getBlogCategories, getBlogTags } from "@/lib/api";
+
+interface Props {
+  activeCategory?: string;
+  activeTag?: string;
+}
+
+const { activeCategory, activeTag } = Astro.props;
+
+// Fetch categories and tags for navigation
+const [categoriesRes, tagsRes] = await Promise.all([
+  getBlogCategories(),
+  getBlogTags()
+]);
+
+const categories = categoriesRes?.data || [];
+const tags = tagsRes?.data || [];
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      {/* Left: Back + Logo */}
+      <div class="flex items-center gap-4">
+        <a href="/" class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <IconArrowLeft class="size-4" />
+          <span class="hidden sm:inline">Trang chủ</span>
+        </a>
+        <div class="w-px h-6 bg-border"></div>
+        <a href="/blog" class="flex items-center gap-2">
+          <IconNews class="size-5 text-primary" />
+          <span class="font-bold text-foreground">Blog</span>
+        </a>
+      </div>
+
+      {/* Right: Quick actions */}
+      <div class="flex items-center gap-3">
+        <Button variant="ghost" size="sm" href="/">
+          <IconHome class="size-4" />
+          <span class="hidden sm:inline">FoodStore</span>
+        </Button>
+      </div>
+    </div>
+
+    {/* Tags/Categories bar */}
+    {(categories.length > 0 || tags.length > 0) && (
+      <div class="flex items-center gap-2 pb-3 overflow-x-auto scrollbar-hide">
+        <a 
+          href="/blog" 
+          class={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap transition-colors ${!activeCategory && !activeTag ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
+        >
+          Tất cả
+        </a>
+        {categories.map((cat) => (
+          <a 
+            href={`/blog?category=${cat.slug}`} 
+            class={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap transition-colors ${activeCategory === cat.slug ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
+          >
+            {cat.name}
+          </a>
+        ))}
+        {tags.slice(0, 5).map((tag) => (
+          <a 
+            href={`/blog?tag=${tag.slug}`} 
+            class={`text-xs px-3 py-1.5 rounded-full whitespace-nowrap transition-colors ${activeTag === tag.slug ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:text-foreground'}`}
+          >
+            {tag.name}
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</nav>

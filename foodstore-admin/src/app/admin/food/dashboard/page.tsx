@@ -3,7 +3,10 @@
 import * as React from "react"
 import { BarChart3, DollarSign, ShoppingCart, Users } from "lucide-react"
 import { toast } from "sonner"
-import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import {
+  Area, AreaChart, CartesianGrid, Cell, Pie, PieChart,
+  ResponsiveContainer, Tooltip, XAxis, YAxis,
+} from "@/components/ui/dynamic-charts"
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,7 +21,7 @@ import type { DashboardStats } from "@/lib/types"
 const COLORS = ["#2563eb", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6", "#f97316"]
 
 export default function FoodDashboard() {
-  const { user } = useAuth()
+  useAuth()
   const [stats, setStats] = React.useState<DashboardStats | null>(null)
   const [loading, setLoading] = React.useState(true)
 

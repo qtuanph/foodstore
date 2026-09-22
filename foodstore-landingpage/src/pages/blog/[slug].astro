@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogNavbar from '../../components/BlogNavbar.astro';
+import FooterSection from '../../components/starwind-pro/footer-section/FooterSection.astro';
+import { getBlogArticle, getBlogArticles } from '../../lib/api';
+import { Badge } from '../../components/starwind/badge';
+import { Button } from '../../components/starwind/button';
+import type { BlogPost } from '../../lib/api';
+
+export async function getStaticPaths() {
+  const articlesRes = await getBlogArticles(1, 100);
+  const articles = Array.isArray(articlesRes?.data) ? articlesRes.data : [];
+  
+  return articles.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+
+const postRes = await getBlogArticle(post.slug);
+const article = postRes?.data || post;
+
+const title = article.metaTitle || article.title;
+const description = article.metaDescription || article.excerpt || '';
+---
+
+<Layout title={title} description={description}>
+  <BlogNavbar />
+
+  {/* Article Header */}
+  <section class="pt-32 pb-8 bg-muted/30">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+        <a href="/" class="hover:text-foreground transition-colors">Trang chủ</a>
+        <span>/</span>
+        <a href="/blog" class="hover:text-foreground transition-colors">Blog</a>
+        <span>/</span>
+        <span class="text-foreground line-clamp-1">{article.title}</span>
+      </nav>
+
+      {article.categories && article.categories.length > 0 && (
+        <div class="flex items-center gap-2 mb-4">
+          {article.categories.map((cat) => (
+            <Badge variant="secondary">{cat.name}</Badge>
+          ))}
+        </div>
+      )}
+
+      <h1 class="text-4xl md:text-5xl font-bold text-foreground mb-4">
+        {article.title}
+      </h1>
+
+      <div class="flex items-center gap-4 text-sm text-muted-foreground">
+        {article.publishedAt && (
+          <span>{new Date(article.publishedAt).toLocaleDateString('vi-VN')}</span>
+        )}
+        {article.readingTime && (
+          <span>{article.readingTime} phút đọc</span>
+        )}
+        <span>{article.viewCount} lượt xem</span>
+      </div>
+    </div>
+  </section>
+
+  <article class="py-12 bg-background">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {article.thumbnailUrl && (
+        <div class="aspect-video rounded-2xl overflow-hidden mb-8">
+          <img 
+            src={article.thumbnailUrl} 
+            alt={article.title}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      {article.content ? (
+        <div class="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary prose-img:rounded-xl">
+          <Fragment set:html={article.content} />
+        </div>
+      ) : article.excerpt ? (
+        <p class="text-lg text-muted-foreground leading-relaxed">
+          {article.excerpt}
+        </p>
+      ) : (
+        <p class="text-muted-foreground">Nội dung đang được cập nhật...</p>
+      )}
+
+      {article.tags && article.tags.length > 0 && (
+        <div class="mt-8 pt-8 border-t">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-sm font-medium text-foreground">Tags:</span>
+            {article.tags.map((tag) => (
+              <a href={`/blog?tag=${tag.slug}`}>
+                <Badge variant="outline" class="hover:bg-muted transition-colors">{tag.name}</Badge>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="mt-12">
+        <Button variant="outline" href="/blog">
+          ← Quay lại danh sách bài viết
+        </Button>
+      </div>
+    </div>
+  </article>
+
+  <FooterSection />
+</Layout>

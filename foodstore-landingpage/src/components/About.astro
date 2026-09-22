@@ -1,0 +1,47 @@
+---
+import { Badge } from "@/components/starwind/badge";
+---
+
+<section id="about" class="py-24 bg-background">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      {/* Image */}
+      <div class="relative">
+        <div class="aspect-[4/5] rounded-2xl overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80&auto=format&fit=crop" 
+            alt="Head chef preparing food" 
+            class="size-full object-cover"
+          />
+        </div>
+        {/* Experience badge */}
+        <div class="absolute -bottom-6 -right-6 bg-primary text-primary-foreground rounded-2xl p-6 shadow-xl">
+          <div class="text-4xl font-bold">15+</div>
+          <div class="text-sm opacity-90">Năm kinh nghiệm</div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div class="space-y-6">
+        <Badge variant="secondary">Câu chuyện của chúng tôi</Badge>
+        <h2 class="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+          Từ niềm đam mê ẩm thực đến bữa ăn hoàn hảo
+        </h2>
+        <p class="text-lg text-muted-foreground leading-relaxed">
+          FoodStore bắt đầu từ một ước mơ giản đơn: mang đến những bữa ăn tươi ngon, đậm đà hương vị cho mọi gia đình Việt Nam. Mỗi món ăn đều được chế biến tỉ mỉ, từ nguyên liệu tuyển chọn kỹ lưỡng.
+        </p>
+        <p class="text-lg text-muted-foreground leading-relaxed">
+          Với đội ngũ đầu bếp quốc tế và cam kết chất lượng, chúng tôi tự hào phục vụ hơn 12,500 khách hàng mỗi tháng.
+        </p>
+        <div class="pt-4">
+          <a href="#menu" class="inline-flex items-center gap-2 text-primary font-semibold hover:gap-4 transition-all">
+            Khám phá thực đơn
+            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

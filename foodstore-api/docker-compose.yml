@@ -80,7 +80,7 @@ services:
     container_name: foodstore-api
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.api.rule=Host(`api.localhost`) || Host(`localhost`)"
       - "traefik.http.services.api.loadbalancer.server.port=8080"
     environment:
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${DB_PASSWORD}"

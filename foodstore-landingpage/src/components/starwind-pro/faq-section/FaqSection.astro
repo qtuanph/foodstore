@@ -1,0 +1,80 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { tv } from "tailwind-variants";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/starwind/accordion";
+import { Badge } from "@/components/starwind/badge";
+
+export interface FaqItem {
+  title: string;
+  content: string;
+}
+
+interface Props extends HTMLAttributes<"section"> {
+  heading?: string;
+  description?: string;
+  items?: FaqItem[];
+}
+
+const faqStyles = tv({
+  base: "mx-auto w-full max-w-3xl px-4 py-24",
+});
+
+const {
+  heading = "Câu hỏi thường gặp",
+  description = "Tìm hiểu thêm về dịch vụ của chúng tôi.",
+  items = [
+    {
+      title: "Giờ mở cửa là khi nào?",
+      content: "Thứ 2 - Thứ 6: 7:00 - 22:00. Thứ 7 - Chủ nhật: 8:00 - 23:00. Mở cửa cả ngày lễ."
+    },
+    {
+      title: "Có hỗ trợ đặt tiệc không?",
+      content: "Có, chúng tôi hỗ trợ đặt tiệc sinh nhật, tiệc công ty, hội nghị với mức giá ưu đãi. Liên hệ hotline 1900 1234 56 để được tư vấn chi tiết."
+    },
+    {
+      title: "Menu có những món gì?",
+      content: "FoodStore phục vụ đa dạng các món ăn từ burger, pizza, salad đến các món Á u. Thực đơn được cập nhật thường xuyên theo mùa. Xem chi tiết tại phần Thực đơn."
+    },
+    {
+      title: "Làm thế nào để đặt bàn?",
+      content: "Bạn có thể đặt bàn qua hotline 1900 1234 56 hoặc đến trực tiếp cửa hàng. Chúng tôi khuyến khích đặt bàn trước vào dịp cuối tuần."
+    },
+    {
+      title: "Có chỗ đậu xe không?",
+      content: "Có, FoodStore có bãi đậu xe miễn phí cho khách hàng. Đỗ xe ngay trước cửa hàng."
+    },
+    {
+      title: "Có chấp nhận thanh toán bằng thẻ không?",
+      content: "Có, chúng tôi chấp nhận thanh toán tiền mặt, thẻ tín dụng/ghi nợ, và ví điện tử (Momo, ZaloPay, VietQR)."
+    }
+  ],
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<section class={faqStyles({ class: className })} {...rest}>
+  <div class="text-center mb-12">
+    <Badge variant="secondary" class="mb-4">FAQ</Badge>
+    <h2 class="font-heading text-3xl font-bold">{heading}</h2>
+    <p class="text-muted-foreground mt-2">{description}</p>
+  </div>
+  <Accordion defaultValue="item-1" class="space-y-3">
+    {
+      items.map((item, idx) => (
+        <AccordionItem value={`item-${idx + 1}`} class="border rounded-lg px-4">
+          <AccordionTrigger class="text-left">{item.title}</AccordionTrigger>
+          <AccordionContent class="text-muted-foreground">
+            {item.content}
+          </AccordionContent>
+        </AccordionItem>
+      ))
+    }
+  </Accordion>
+</section>

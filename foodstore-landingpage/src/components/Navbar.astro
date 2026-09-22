@@ -1,0 +1,53 @@
+---
+import { Button } from "@/components/starwind/button";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuLink,
+} from "@/components/starwind/navigation-menu";
+
+import IconLogout from "@tabler/icons/outline/logout.svg";
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/25 group-hover:scale-110 transition-transform duration-300">
+          <IconLogout class="size-6 text-primary-foreground" />
+        </div>
+        <div>
+          <span class="text-xl font-bold text-foreground block leading-tight">FoodStore</span>
+          <span class="text-xs text-muted-foreground">Premium Food</span>
+        </div>
+      </a>
+      
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="#about" class="text-sm font-medium">Giới thiệu</NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="#menu" class="text-sm font-medium">Thực đơn</NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="#specials" class="text-sm font-medium">Ưu đãi</NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="#blog" class="text-sm font-medium">Bài viết</NavigationMenuLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuLink href="#contact" class="text-sm font-medium">Liên hệ</NavigationMenuLink>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+      
+      <div class="flex items-center gap-3">
+        <Button variant="primary" size="sm" class="shadow-lg shadow-primary/25" href="#contact">
+          Liên hệ đặt bàn
+        </Button>
+      </div>
+    </div>
+  </div>
+</nav>

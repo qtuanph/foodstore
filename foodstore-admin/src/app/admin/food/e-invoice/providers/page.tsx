@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Edit, Plus, Trash2, Plug, Wifi } from "lucide-react"
+import { Edit, Plus, Trash2, Wifi } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 

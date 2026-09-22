@@ -16,7 +16,7 @@ import { CrudSheet } from "@/components/crud-sheet"
 import { DeleteConfirmDialog } from "@/components/confirm-dialog"
 import { blogCategoryService } from "@/lib/services/blog-category-service"
 import { formatDateTime } from "@/lib/utils"
-import type { BlogCategoryDto, CreateBlogCategoryDto, UpdateBlogCategoryDto } from "@/lib/types"
+import type { BlogCategoryDto } from "@/lib/types"
 
 export default function BlogCategoriesPage() {
   const [data, setData] = React.useState<BlogCategoryDto[]>([])

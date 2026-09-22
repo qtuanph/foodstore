@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import type { BlogPost, CreateBlogPostDto, UpdateBlogPostDto, BlogPostRevisionDto, BlogPostBlockDto, CmsDashboardStats } from "@/lib/types";
+import type { BlogPost, CreateBlogPostDto, UpdateBlogPostDto, BlogPostRevisionDto, CmsDashboardStats } from "@/lib/types";
 import { authHeaders, type ApiResponse } from "./utils";
 
 export const blogService = {

@@ -1,0 +1,158 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BlogNavbar from '../../components/BlogNavbar.astro';
+import FooterSection from '../../components/starwind-pro/footer-section/FooterSection.astro';
+import { getBlogArticles, getBlogCategories, getFeaturedArticles } from '../../lib/api';
+import { Badge } from '../../components/starwind/badge';
+import { Card, CardContent } from '../../components/starwind/card';
+import { Button } from '../../components/starwind/button';
+
+// Get query params for filtering
+const url = new URL(Astro.request.url);
+const categoryFilter = url.searchParams.get('category') || undefined;
+const tagFilter = url.searchParams.get('tag') || undefined;
+
+// Fetch data at build time
+const [articlesRes, categoriesRes, featuredRes] = await Promise.all([
+  getBlogArticles(1, 20, categoryFilter, tagFilter),
+  getBlogCategories(),
+  getFeaturedArticles(5)
+]);
+
+const articles = Array.isArray(articlesRes?.data) ? articlesRes.data : [];
+const categories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
+const featured = Array.isArray(featuredRes?.data?.data) ? featuredRes.data.data : Array.isArray(featuredRes?.data) ? featuredRes.data : [];
+---
+
+<Layout 
+  title="Bài viết | FoodStore" 
+  description="Khám phá các bài viết về ẩm thực, công thức nấu ăn và tin tức mới nhất từ FoodStore."
+>
+
+  <BlogNavbar activeCategory={categoryFilter} activeTag={tagFilter} />
+
+  {/* Hero */}
+  <section class="pt-32 pb-16 bg-muted/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center space-y-4">
+        <Badge variant="secondary">Blog</Badge>
+        <h1 class="text-4xl md:text-5xl font-bold text-foreground">
+          Bài viết & Tin tức
+        </h1>
+        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Khám phá các công thức nấu ăn, mẹo vặt và tin tức mới nhất từ FoodStore.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* Featured Articles */}
+  {featured.length > 0 && !categoryFilter && !tagFilter && (
+    <section class="py-12 bg-background">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-foreground mb-8">Bài viết nổi bật</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featured.slice(0, 3).map((post) => (
+            <a href={`/blog/${post.slug}`} class="group">
+              <Card class="h-full hover:shadow-lg transition-shadow overflow-hidden">
+                {post.thumbnailUrl && (
+                  <div class="aspect-video overflow-hidden">
+                    <img 
+                      src={post.thumbnailUrl} 
+                      alt={post.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                <CardContent class="p-6">
+                  <div class="flex items-center gap-2 mb-3">
+                    {post.categories?.map((cat) => (
+                      <Badge variant="secondary" class="text-xs">{cat.name}</Badge>
+                    ))}
+                  </div>
+                  <h3 class="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p class="text-muted-foreground text-sm line-clamp-2 mb-4">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  <div class="flex items-center gap-4 text-xs text-muted-foreground">
+                    {post.publishedAt && (
+                      <span>{new Date(post.publishedAt).toLocaleDateString('vi-VN')}</span>
+                    )}
+                    {post.readingTime && (
+                      <span>{post.readingTime} phút đọc</span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {/* All Articles */}
+  <section class="py-12 bg-background">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-foreground mb-8">
+        {categoryFilter || tagFilter ? 'Kết quả tìm kiếm' : 'Tất cả bài viết'}
+      </h2>
+      
+      {articles.length > 0 ? (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {articles.map((post) => (
+            <a href={`/blog/${post.slug}`} class="group">
+              <Card class="h-full hover:shadow-lg transition-shadow overflow-hidden">
+                {post.thumbnailUrl && (
+                  <div class="aspect-video overflow-hidden">
+                    <img 
+                      src={post.thumbnailUrl} 
+                      alt={post.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                <CardContent class="p-6">
+                  <div class="flex items-center gap-2 mb-3">
+                    {post.categories?.slice(0, 2).map((cat) => (
+                      <Badge variant="secondary" class="text-xs">{cat.name}</Badge>
+                    ))}
+                  </div>
+                  <h3 class="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p class="text-muted-foreground text-sm line-clamp-2 mb-4">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  <div class="flex items-center gap-4 text-xs text-muted-foreground">
+                    {post.publishedAt && (
+                      <span>{new Date(post.publishedAt).toLocaleDateString('vi-VN')}</span>
+                    )}
+                    {post.readingTime && (
+                      <span>{post.readingTime} phút đọc</span>
+                    )}
+                    <span>{post.viewCount} lượt xem</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <CardContent class="p-12 text-center">
+            <p class="text-muted-foreground">Chưa có bài viết nào.</p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  </section>
+
+  <FooterSection />
+</Layout>

@@ -15,7 +15,7 @@ import type { EInvoiceProvider, EInvoiceSetting, UpdateEInvoiceSettingDto } from
 
 export default function EInvoiceSettingsPage() {
   const [providers, setProviders] = React.useState<EInvoiceProvider[]>([])
-  const [settings, setSettings] = React.useState<EInvoiceSetting | null>(null)
+  const [, setSettings] = React.useState<EInvoiceSetting | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [saving, setSaving] = React.useState(false)
 

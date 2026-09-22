@@ -20,7 +20,7 @@ import { StatusBadge } from "@/components/status-badge"
 import { ImageUpload } from "@/components/image-upload"
 import { categoryService } from "@/lib/services/category-service"
 import { mediaService } from "@/lib/services/media-service"
-import type { Category, CategoryCreateDto, CategoryUpdateDto } from "@/lib/types"
+import type { Category } from "@/lib/types"
 
 export default function CategoriesPage() {
   const [data, setData] = React.useState<Category[]>([])

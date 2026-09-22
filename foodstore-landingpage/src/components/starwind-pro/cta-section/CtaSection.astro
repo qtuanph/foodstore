@@ -1,0 +1,63 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { tv } from "tailwind-variants";
+
+import { Button } from "@/components/starwind/button";
+
+
+export interface ButtonConfig {
+  text: string;
+  href: string;
+}
+
+interface Props extends HTMLAttributes<"section"> {
+  title?: string;
+  description?: string;
+  primaryButton?: ButtonConfig;
+  secondaryButton?: ButtonConfig;
+}
+
+const ctaStyles = tv({
+  base: "bg-primary text-primary-foreground",
+});
+
+const {
+  title = "Đến thăm FoodStore ngay hôm nay!",
+  description = "Trải nghiệm ẩm thực tuyệt vời tại FoodStore. Liên hệ đặt bàn ngay!",
+  primaryButton = { text: "Liên hệ đặt bàn", href: "#contact" },
+  secondaryButton = { text: "Gọi hotline", href: "tel:1900123456" },
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<section class={ctaStyles({ class: className })} {...rest}>
+  <div class="mx-auto max-w-4xl px-4 py-20 text-center">
+    <h2 class="font-heading mb-4 text-3xl font-bold tracking-tight @lg:text-4xl @2xl:text-5xl">
+      {title}
+    </h2>
+    <p class="mx-auto mb-10 max-w-xl text-pretty @2xl:text-lg opacity-90">
+      {description}
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <Button 
+        variant="secondary" 
+        href={primaryButton.href}
+        class="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-6 text-lg font-bold"
+      >
+        {primaryButton.text}
+      </Button>
+      {
+        secondaryButton && (
+          <Button 
+            variant="default" 
+            href={secondaryButton.href}
+            class="bg-transparent border border-white/30 text-white hover:bg-white/10 px-8 py-6 text-lg"
+          >
+            {secondaryButton.text}
+          </Button>
+        )
+      }
+    </div>
+  </div>
+</section>

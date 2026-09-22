@@ -1,0 +1,72 @@
+---
+import { Badge } from "@/components/starwind/badge";
+import { Button } from "@/components/starwind/button";
+import { getCombos } from "@/lib/api";
+import IconParty from "@tabler/icons/outline/confetti.svg";
+
+const comboRes = await getCombos();
+const combos = comboRes?.data || [];
+---
+
+<section id="specials" class="py-24 bg-background">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 space-y-4">
+      <Badge variant="secondary">Ưu đãi đặc biệt</Badge>
+      <h2 class="text-4xl md:text-5xl font-bold text-foreground">
+        Combo tiết kiệm
+      </h2>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Đặt combo hôm nay để nhận ưu đãi hấp dẫn. Áp dụng cho tất cả chi nhánh.
+      </p>
+    </div>
+
+    {combos.length > 0 ? (
+      <div class="grid md:grid-cols-3 gap-6">
+        {combos.map((combo, index) => (
+          <div class={`relative rounded-2xl p-6 border hover:shadow-lg transition-shadow ${
+            index === combos.length - 1 && combos.length % 3 === 0
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-gradient-to-br from-primary/5 to-primary/10 border-primary/10'
+          }`}>
+            {index === combos.length - 1 && combos.length % 3 === 0 && (
+              <Badge class="absolute top-4 right-4 bg-primary-foreground text-primary">Best seller</Badge>
+            )}
+            <div class={`w-16 h-16 rounded-xl flex items-center justify-center mb-4 ${
+              index === combos.length - 1 && combos.length % 3 === 0
+                ? 'bg-primary-foreground/20'
+                : 'bg-primary/10'
+            }`}>
+              <IconParty class={`size-8 ${
+                index === combos.length - 1 && combos.length % 3 === 0
+                  ? 'text-primary-foreground'
+                  : 'text-primary'
+              }`} />
+            </div>
+            <h3 class="text-xl font-bold mb-2">{combo.name}</h3>
+            {combo.description && (
+              <p class={`text-sm mb-4 ${
+                index === combos.length - 1 && combos.length % 3 === 0
+                  ? 'opacity-80'
+                  : 'text-muted-foreground'
+              }`}>{combo.description}</p>
+            )}
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-bold">{new Intl.NumberFormat('vi-VN').format(combo.comboPrice)}đ</span>
+            </div>
+            <Button class={`w-full mt-6 ${
+              index === combos.length - 1 && combos.length % 3 === 0
+                ? 'bg-primary-foreground text-primary hover:bg-primary-foreground/90'
+                : ''
+            }`} variant={index === combos.length - 1 && combos.length % 3 === 0 ? 'default' : 'outline'} href="#contact">
+              Liên hệ
+            </Button>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-12">
+        <p class="text-muted-foreground">Combo đang được cập nhật...</p>
+      </div>
+    )}
+  </div>
+</section>

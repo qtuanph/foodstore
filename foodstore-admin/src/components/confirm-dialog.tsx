@@ -15,7 +15,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
 
 interface ConfirmDialogProps {
   open?: boolean
@@ -40,11 +39,8 @@ export function ConfirmDialog({
   variant = "destructive",
   trigger,
 }: ConfirmDialogProps) {
-  const Wrapper = trigger ? AlertDialog : React.Fragment
-  const wrapperProps = trigger ? { open, onOpenChange } : {}
-
   return (
-    <AlertDialog {...wrapperProps}>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       {trigger && <AlertDialogTrigger>{trigger}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>

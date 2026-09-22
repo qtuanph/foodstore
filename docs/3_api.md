@@ -227,15 +227,21 @@ Authorization: Bearer <jwt_token>
 | `DELETE` | `/v2/api/admin/blog-blocks/{blockId:guid}` | Delete block | `blog.delete` |
 | `PUT` | `/v2/api/admin/blog-blocks/reorder` | Reorder blocks | `blog.update` |
 
-### CMS Public API (for Astro landing page)
+### Public Blog API (for Astro landing page)
 | Method | Route | Description |
 |---|---|---|
-| `GET` | `/v2/api/public/articles` | List published articles (paginated) |
-| `GET` | `/v2/api/public/articles/{slug}` | Get article by slug |
-| `GET` | `/v2/api/public/featured` | Get featured articles |
-| `GET` | `/v2/api/public/categories` | List categories |
-| `GET` | `/v2/api/public/tags` | List tags |
-| `POST` | `/v2/api/public/articles/{slug}/view` | Increment view count |
+| `GET` | `/v2/api/public/blog/articles` | List published articles (paginated) |
+| `GET` | `/v2/api/public/blog/articles/{slug}` | Get article by slug |
+| `GET` | `/v2/api/public/blog/featured` | Get featured articles |
+| `GET` | `/v2/api/public/blog/categories` | List categories |
+| `GET` | `/v2/api/public/blog/tags` | List tags |
+| `POST` | `/v2/api/public/blog/articles/{slug}/view` | Increment view count |
+
+### Public Menu API (for Astro landing page)
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/v2/api/public/menu` | List active menu items (paginated, `?page=1&pageSize=12`) |
+| `GET` | `/v2/api/public/menu/categories` | List active menu categories |
 
 ---
 

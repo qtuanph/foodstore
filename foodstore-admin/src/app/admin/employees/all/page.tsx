@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { Edit, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import type { ColumnDef } from "@tanstack/react-table"
@@ -94,7 +95,7 @@ export default function EmployeeAllPage() {
   const columns: ColumnDef<Employee>[] = [
     { id: "fullName", accessorKey: "fullName", header: "Họ tên", cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        {row.original.avatarUrl ? <img src={row.original.avatarUrl} alt="" className="size-8 rounded-full object-cover" /> : <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium">{row.original.fullName.charAt(0)}</div>}
+        {row.original.avatarUrl ? <Image src={row.original.avatarUrl} alt="" width={32} height={32} unoptimized className="size-8 rounded-full object-cover" /> : <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium">{row.original.fullName.charAt(0)}</div>}
         <span>{row.original.fullName}</span>
       </div>
     )},
